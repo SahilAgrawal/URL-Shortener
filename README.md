@@ -1,5 +1,5 @@
 # URL-Shortener
-Created a REST API using Golang and Gin, which is able to short the URL.
+I created a REST API using Golang and Gin, which can shorten the URL.
 
 ## Run the application in localhost:8080
 ```bash
