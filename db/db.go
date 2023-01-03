@@ -3,7 +3,6 @@ package db
 import (
 	"URL-Shortener/model"
 	"context"
-	"fmt"
 	"time"
 
 	"github.com/pkg/errors"
@@ -65,11 +64,6 @@ func (r *MongoRepository) getCollection() (context.Context, *mongo.Collection) {
 }
 
 func (r *MongoRepository) Find(code string) (*model.Redirect, error) {
-	// ctx, cancle := context.WithTimeout(context.Background(), r.timeout)
-	// defer cancle()
-
-	// collection := r.client.Database(r.database).Collection(col)
-
 	ctx, collection := r.getCollection()
 	redirect := &model.Redirect{}
 	filter := bson.M{"code": code}
@@ -86,10 +80,6 @@ func (r *MongoRepository) Find(code string) (*model.Redirect, error) {
 }
 
 func (r *MongoRepository) Store(redirect *model.Redirect) error {
-	// ctx, cancle := context.WithTimeout(context.Background(), r.timeout)
-	// defer cancle()
-
-	// collection := r.client.Database(r.database).Collection("Shortener")
 
 	ctx, collection := r.getCollection()
 	filter := bson.M{"url": redirect.URL}
@@ -131,21 +121,18 @@ func (r *MongoRepository) All() ([]model.Redirect, error) {
 	defer cursor.Close(context.TODO())
 
 	if err != nil {
-		fmt.Println("First error 1" + err.Error())
 		return nil, errors.New("Error Internal Server Error")
 	}
 	for cursor.Next(context.TODO()) {
 		var temp model.Redirect
 		err = cursor.Decode(&temp)
 		if err != nil {
-			fmt.Println("Second error 2")
 			return nil, errors.New("Error Internal Server Error")
 		}
 		temp.Code = Url + temp.Code
 		data = append(data, temp)
 	}
 	if err = cursor.Err(); err != nil {
-		fmt.Println("Third error 3")
 		return nil, errors.New(err.Error())
 	}
 
